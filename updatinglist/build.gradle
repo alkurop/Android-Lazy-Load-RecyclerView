@@ -29,20 +29,43 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-     compile "com.android.support:recyclerview-v7:$supportVersion"
+    compile "com.android.support:recyclerview-v7:$supportVersion"
     compile "com.android.support:appcompat-v7:$supportVersion"
 }
 
 kapt {
     generateStubs = true
 }
+
 buildscript {
     ext.kotlin_version = '1.0.2'
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
+bintray {
+    user = 'alkurop'
+    key = '6c8ff4d776d6c0efc6b12424d2efecceb8f7d077'
+    pkg{
+        repo="maven"
+        name="com.alkurop.updatinglist"
+        version{
+            name="1.0.1"
+            userOrg = 'alkurop'
+            desc = "Uploading List"
+            released = new Date()
+            vcsTag = "1.0.1"
+        }
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/alkurop/UL.git'
+        websiteUrl = 'https://github.com/alkurop/UL'
     }
 }
