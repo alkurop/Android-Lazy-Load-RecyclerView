@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release'
+
 
 android {
     compileSdkVersion 23
@@ -45,9 +47,22 @@ buildscript {
         jcenter()
     }
     dependencies {
-
+        classpath 'com.novoda:bintray-release:0.3.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
     }
 }
-
+publish {
+    groupId = 'com.github.alkurop'
+    artifactId = 'updatinglist'
+    publishVersion = '0.0.1'
+    desc = 'A small library containing wrapper around recycler view'
+    licences = ['MIT']
+    website = 'https://github.com/alkurop/UI'
+}
+allprojects {
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+    }
+}

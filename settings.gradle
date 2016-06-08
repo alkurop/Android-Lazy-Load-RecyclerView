@@ -1,1 +1,1 @@
-include ':app', ':updatinglist'
+include ':demo', ':updatinglist'
