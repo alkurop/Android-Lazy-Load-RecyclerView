@@ -32,3 +32,5 @@ gradle/
 .DS_Store
 
 *.jks
+gradlew
+gradlew.bat
