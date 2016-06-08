@@ -1,4 +1,4 @@
-package com.alkurop.updatinglist;
+package com.github.alkurop.updatinglist;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

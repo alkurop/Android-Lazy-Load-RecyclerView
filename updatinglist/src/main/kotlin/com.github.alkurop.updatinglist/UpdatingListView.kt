@@ -1,4 +1,4 @@
-package com.alkurop.updatinglist
+package com.github.alkurop.updatinglist
 
 import android.content.Context
 import android.os.Parcelable

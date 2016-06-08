@@ -1,4 +1,4 @@
-package com.alkurop.updatinglist;
+package com.github.alkurop.updatinglist;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
