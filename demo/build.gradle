@@ -1,11 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.alkurop.updatingexample"
+        applicationId "com.alkurop.com.updatingexample"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -17,11 +19,37 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+ext {
+    supportVersion = "23.4.0"
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":updatinglist")
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile project(path: ':updatinglist')
+    compile "com.android.support:recyclerview-v7:$supportVersion"
+    compile "com.android.support:appcompat-v7:$supportVersion"
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+}
+
+kapt {
+    generateStubs = true
+}
+
+buildscript {
+    ext.kotlin_version = '1.0.2'
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+    }
 }
