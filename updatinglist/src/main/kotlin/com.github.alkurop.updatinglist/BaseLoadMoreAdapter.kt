@@ -29,6 +29,10 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         mState = AdapterStateModel(true, 0, 0, 0, 0, false, false, mutableListOf())
     }
 
+    companion object {
+        var shouldStopOnError = true
+    }
+
     abstract fun onCreateProgressVH(viewGroup: ViewGroup): BaseViewHolder<T>
 
     abstract fun onCreateVH(viewGroup: ViewGroup, viewType: Int): BaseViewHolder<T>
@@ -125,7 +129,8 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
     }
 
     private fun onError() {
-        mState.canLoadMore = false
+        if (shouldStopOnError)
+            mState.canLoadMore = false
         mState.isError = true
         if (mState.isLoading) {
             mState.isLoading = false
