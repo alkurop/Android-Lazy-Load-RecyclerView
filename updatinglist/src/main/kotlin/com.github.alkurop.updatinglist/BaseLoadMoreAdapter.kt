@@ -134,8 +134,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         mState.isError = true
         if (mState.isLoading) {
             mState.isLoading = false
-            notifyDataSetChanged()
-        }
+         }
         ListLogger.log(TAG, "onError")
     }
 
