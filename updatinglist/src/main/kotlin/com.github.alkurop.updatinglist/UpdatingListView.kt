@@ -167,6 +167,10 @@ class UpdatingListView : FrameLayout {
         emptyView?.visibility = if (show) View.VISIBLE else View.GONE
         ListLogger.log(TAG, "showEmpty $show")
     }
+    fun onStop(){
+        isLoading = false
+        adapter?.notifyDataSetChanged()
+    }
 }
 
 

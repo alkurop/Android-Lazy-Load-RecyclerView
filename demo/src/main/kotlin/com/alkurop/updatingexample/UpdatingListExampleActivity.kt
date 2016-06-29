@@ -85,7 +85,7 @@ class UpdatingListExampleActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        mList.isLoading = false
+        mList.onStop()
         mSubscriptions.forEach { it.unsubscribe() }
         mSubscriptions.clear()
         super.onStop()
