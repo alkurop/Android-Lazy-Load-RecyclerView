@@ -146,6 +146,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
             notifyItemInserted(itemCount - 1)
         } else {
             mState.progressCount = 0
+            notifyDataSetChanged()
         }
         ListLogger.log(TAG, "showloading , $value")
     }

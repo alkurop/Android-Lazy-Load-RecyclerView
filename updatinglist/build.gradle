@@ -41,7 +41,7 @@ kapt {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.4'
+    ext.kotlin_version = '1.0.2'
     repositories {
         mavenCentral()
         jcenter()
@@ -55,7 +55,7 @@ buildscript {
 publish {
     groupId = 'com.github.alkurop'
     artifactId = 'updatinglist'
-    publishVersion = '0.0.7'
+    publishVersion = '0.0.8'
     desc = 'A small library containing wrapper around recycler view'
     licences = ['MIT']
     website = 'https://github.com/alkurop/UI'
