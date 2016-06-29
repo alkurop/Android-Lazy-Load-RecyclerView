@@ -69,7 +69,26 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         }
         ListLogger.log(TAG, "add items ${newItems.size}")
     }
+    fun addItem(item : T, canLoadMore: Boolean) {
+        setLoading(false)
+        val oldSize = mState.items.size
+        addItemToPosition(item, oldSize, canLoadMore)
+    }
+    fun addItemToPosition(item: T, position:Int, canLoadMore: Boolean) {
+        setLoading(false)
+        val newSize = mState.items.size +1
 
+        mState.items.add(position, item)
+        mState.canLoadMore = false
+        notifyItemInserted(position)
+        if (newSize  > 0) {
+            mState.canLoadMore = canLoadMore
+            mState.currentPage += 1
+        } else {
+            mState.canLoadMore = false
+        }
+        ListLogger.log(TAG, "add item" );
+    }
     fun getItem(position: Int): T? {
         if (mState.items.size <= position) {
             return null
@@ -134,8 +153,9 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         mState.isError = true
         if (mState.isLoading) {
             mState.isLoading = false
-         }
+        }
         ListLogger.log(TAG, "onError")
+        notifyDataSetChanged()
     }
 
     private fun onRetry() {

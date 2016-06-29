@@ -78,7 +78,7 @@ class UpdatingListView : FrameLayout {
         addView(swipeView)
         swipeView.addView(recycler)
         swipeView.isEnabled = false
-        swipeView.setOnRefreshListener { adapter?.clear(); refresh() }
+        swipeView.setOnRefreshListener {  refresh() }
     }
 
     override fun onSaveInstanceState(): Parcelable {
