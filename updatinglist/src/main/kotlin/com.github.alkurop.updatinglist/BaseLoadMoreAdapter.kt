@@ -52,6 +52,23 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         notifyDataSetChanged()
     }
 
+    fun addItems(newItems: List<T>, canLoadMore: Boolean) {
+        setLoading(false)
+        val oldSize = mState.items.size
+        val delta = newItems.size
+
+        mState.items.addAll(newItems)
+        mState.canLoadMore = false
+        notifyItemRemoved(oldSize)
+        notifyItemRangeInserted(oldSize, delta - 1)
+        if (newItems.size > 0) {
+            mState.canLoadMore = canLoadMore
+            mState.currentPage += 1
+        } else {
+            mState.canLoadMore = false
+        }
+        ListLogger.log(TAG, "add items ${newItems.size}")
+    }
     fun addItem(item : T, canLoadMore: Boolean) {
         setLoading(false)
         val oldSize = mState.items.size
@@ -63,7 +80,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
 
         mState.items.add(position, item)
         mState.canLoadMore = false
-         notifyItemInserted(position)
+        notifyItemInserted(position)
         if (newSize  > 0) {
             mState.canLoadMore = canLoadMore
             mState.currentPage += 1
@@ -72,7 +89,6 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         }
         ListLogger.log(TAG, "add item" );
     }
-
     fun getItem(position: Int): T? {
         if (mState.items.size <= position) {
             return null
