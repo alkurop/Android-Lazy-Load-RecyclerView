@@ -45,15 +45,15 @@ class UpdatingListView : FrameLayout {
         }
     var isLoading: Boolean
         set(value) = doOnSetLoading(value)
-        get() = adapter?.controller?.getAdapterState()?.isLoading ?: false
+        get() = adapter?.state?.isLoading ?: false
 
     var loadMoreListener: ((offset: Int) -> Unit)? = null
         set(value) {
-            field = value; if (value != null ) doOnSetLoadMoreListener (value)
+            field = value; if (value != null) doOnSetLoadMoreListener (value)
         }
     var loadMorePagingListener: ((offset: Int) -> Unit)? = null
         set(value) {
-            if (value != null ) doOnSetLoadMorePagingListener(value)
+            if (value != null) doOnSetLoadMorePagingListener(value)
         }
 
     private var progressView: View? = null
@@ -78,32 +78,31 @@ class UpdatingListView : FrameLayout {
         addView(swipeView)
         swipeView.addView(recycler)
         swipeView.isEnabled = false
-        swipeView.setOnRefreshListener {  refresh() }
+        swipeView.setOnRefreshListener { refresh() }
     }
 
     override fun onSaveInstanceState(): Parcelable {
         return UpdatingListSaveState(super.onSaveInstanceState(),
-                  (recycler.adapter as BaseLoadMoreAdapter<*>).controller.saveToModel())
+                  (recycler.adapter as BaseLoadMoreAdapter<*>).saveToModel())
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
-           if (state !is UpdatingListSaveState) {
+        if (state !is UpdatingListSaveState) {
             super.onRestoreInstanceState(state);
             return;
         }
         super.onRestoreInstanceState(state);
-        (recycler.adapter as BaseLoadMoreAdapter<*>).controller.loadFromModel(state.adapterState)
+        (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.adapterState)
     }
 
     fun showLoading(isLoading: Boolean) {
         if (!isLoading) {
-            adapter?.controller?.setLoading(false)
             swipeView.isRefreshing = false
             progressView?.visibility = View.GONE
             showEmpty(adapter?.itemCount == 0)
         } else {
             showEmpty(false)
-            if (!swipeView.isRefreshing && (adapter == null || adapter?.realSize == 0)) {
+            if (!swipeView.isRefreshing && (adapter == null || adapter?.getItemsSize() == 0)) {
                 progressView?.visibility = View.VISIBLE
             }
         }
@@ -112,10 +111,8 @@ class UpdatingListView : FrameLayout {
 
     fun onError() {
         showLoading(false)
-        adapter?.controller?.onError()
+        adapter?.setLoadingMore(false)
     }
-
-    fun onRetry() = adapter?.controller?.onRetry()
 
     fun setLoadingViews(mProgress: View, mEmptyView: View) {
         this.progressView = mProgress
@@ -141,24 +138,24 @@ class UpdatingListView : FrameLayout {
     private fun doOnSetAdapter(value: BaseLoadMoreAdapter<out Parcelable>?) {
         recycler.adapter = value
         if (loadMoreListener != null) {
-            adapter?.onLoadMoreListener = { loadMoreListener!!(adapter!!.realSize) }
+            adapter?.onLoadMoreListener = { loadMoreListener!!(adapter!!.getItemsSize()) }
         }
     }
 
     private fun doOnSetLoadMoreListener(callback: (offset: Int) -> Unit) {
-        var adapter = recycler.adapter
+        val adapter = recycler.adapter
         if (adapter != null && adapter is BaseLoadMoreAdapter<*>)
-            adapter.onLoadMoreListener = { callback(adapter.realSize) }
+            adapter.onLoadMoreListener = { callback(adapter.getItemsSize()) }
     }
 
     private fun doOnSetLoadMorePagingListener(callback: (offset: Int) -> Unit) {
-        var adapter = recycler.adapter
+        val adapter = recycler.adapter
         if (adapter != null && adapter is BaseLoadMoreAdapter<*>)
-            adapter.onLoadMorePagingListener = { callback(adapter.controller.getAdapterState().currentPage) }
+            adapter.onLoadMorePagingListener = { callback(adapter.state.currentPage) }
     }
 
     private fun refresh() {
-        adapter?.controller?.setLoading(true)
+        adapter?.setLoadingMore(true)
         swipeRefreshListener?.invoke()
         ListLogger.log(TAG, "refresh")
     }
@@ -167,9 +164,10 @@ class UpdatingListView : FrameLayout {
         emptyView?.visibility = if (show) View.VISIBLE else View.GONE
         ListLogger.log(TAG, "showEmpty $show")
     }
-    fun onStop(){
+
+    fun onStop() {
         isLoading = false
-        adapter?.notifyDataSetChanged()
+        adapter?.setLoadingMore(false)
     }
 }
 

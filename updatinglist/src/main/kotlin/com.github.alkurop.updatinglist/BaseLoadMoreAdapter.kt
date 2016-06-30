@@ -14,24 +14,12 @@ import android.view.animation.AnimationUtils
 abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<BaseViewHolder<T>>() {
     private val VIEW_TYPE = -300
     private val PROGRESS_TYPE = -400
-    var onLoadMoreListener: (() -> Unit)? = null
-    var onLoadMorePagingListener: (() -> Unit)? = null
-    val realSize: Int
-        get() = mState.items.size
-
-    val controller: AdapterController
-    private lateinit var mState: AdapterStateModel
+    private val LOADING_OFFSET = 3
     private var mRecycler: RecyclerView? = null
     private val TAG = BaseLoadMoreAdapter::class.java.simpleName
-
-    init {
-        controller = AdapterController(this)
-        mState = AdapterStateModel(true, 0, 0, 0, 0, false, false, mutableListOf())
-    }
-
-    companion object {
-        var shouldStopOnError = true
-    }
+    var onLoadMoreListener: (() -> Unit)? = null
+    var onLoadMorePagingListener: (() -> Unit)? = null
+    var state: AdapterStateModel = AdapterStateModel(false, 0, 0, 0, 0, false, mutableListOf())
 
     abstract fun onCreateProgressVH(viewGroup: ViewGroup): BaseViewHolder<T>
 
@@ -39,64 +27,46 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
 
     open fun getAnimationRes() = R.anim.slide_in_bottom
 
-    open fun getLoadingOffset() = 3
-
-    open fun getRestoreFocusOffset() = 3
-
     fun clear() {
-        mState.currentPage = 0
-        mState.items.clear()
-        mState.canLoadMore = true
-        mState.isError = false
-        setLoading(false)
+        state.reset()
         notifyDataSetChanged()
     }
 
-    fun addItems(newItems: List<T>, canLoadMore: Boolean) {
-        setLoading(false)
-        val oldSize = mState.items.size
-        val delta = newItems.size
+    fun getItems(): MutableList<T> = state.items as MutableList<T>
 
-        mState.items.addAll(newItems)
-        mState.canLoadMore = false
-        notifyItemRemoved(oldSize)
+    fun getItemsSize() = state.items.size
+
+    fun addItems(newItems: List<T>) {
+        setLoadingMore(false)
+        val oldSize = getItemsSize()
+        val delta = newItems.size
+        getItems().addAll(newItems)
         notifyItemRangeInserted(oldSize, delta - 1)
-        if (newItems.size > 0) {
-            mState.canLoadMore = canLoadMore
-            mState.currentPage += 1
-        } else {
-            mState.canLoadMore = false
-        }
+        state.currentPage += 1
         ListLogger.log(TAG, "add items ${newItems.size}")
     }
 
-    fun addItem(item: T, canLoadMore: Boolean) {
-        setLoading(false)
-        val oldSize = mState.items.size
-        addItemToPosition(item, oldSize, canLoadMore)
+    fun setCanLoadMore(canLoadMore: Boolean) {
+        state.canLoadMore = canLoadMore
     }
 
-    fun addItemToPosition(item: T, position: Int, canLoadMore: Boolean) {
-        setLoading(false)
-        val newSize = mState.items.size + 1
+    fun addItem(item: T) {
+        setLoadingMore(false)
+        addItemToPosition(item, getItemsSize())
+    }
 
-        mState.items.add(position, item)
-        mState.canLoadMore = false
+    fun addItemToPosition(item: T, position: Int) {
+        setLoadingMore(false)
+        getItems().add(position, item)
         notifyItemInserted(position)
-        if (newSize > 0) {
-            mState.canLoadMore = canLoadMore
-            mState.currentPage += 1
-        } else {
-            mState.canLoadMore = false
-        }
         ListLogger.log(TAG, "add item");
     }
 
     fun getItem(position: Int): T? {
-        if (mState.items.size <= position) {
+        if (getItemsSize() <= position) {
             return null
         }
-        return mState.items[position] as T
+        return getItems()[position]
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -118,18 +88,18 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
     }
 
     override fun onBindViewHolder(viewHolder: BaseViewHolder<T>, position: Int) {
-        if (mState.items.size > position) {
-            viewHolder.bind(mState.items[position] as T)
+        if (getItemsSize() > position) {
+            viewHolder.bind(getItems()[position])
         }
         setAnimation(viewHolder.container, position)
     }
 
     override fun getItemCount(): Int {
-        return if (mState.items.size > 0) mState.items.size + mState.progressCount else 0
+        return if (getItemsSize() > 0) getItemsSize() + state.progressCount else 0
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position < mState.items.size)
+        if (position < getItemsSize())
             return VIEW_TYPE
         return PROGRESS_TYPE
     }
@@ -139,45 +109,30 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         super.onViewDetachedFromWindow(holder)
     }
 
-    private fun setLoading(value: Boolean) {
-        mState.isLoading = value
-        if (value && mState.items.size > 0) {
-            mState.progressCount = 1
+    fun setLoadingMore(isLoading: Boolean) {
+        state.isLoading = isLoading
+        if (isLoading && getItemsSize() > 0) {
+            state.progressCount = 1
             notifyItemInserted(itemCount - 1)
         } else {
-            mState.progressCount = 0
+            state.progressCount = 0
+            notifyItemRemoved(getItemsSize())
         }
-        ListLogger.log(TAG, "showloading , $value")
+        ListLogger.log(TAG, "showloading , $isLoading")
     }
 
-    private fun onError() {
-        if (shouldStopOnError)
-            mState.canLoadMore = false
-        mState.isError = true
-        setLoading(false)
-        ListLogger.log(TAG, "onError")
-    }
-
-    private fun onRetry() {
-        mState.canLoadMore = true
-        mState.isError = false
-        notifyDataSetChanged()
-        ListLogger.log(TAG, "onRetry")
-    }
-
-    private fun loadFromModel(stateModel: AdapterStateModel) {
-        this.mState = stateModel
-        setLoading(false)
+    fun loadFromModel(stateModel: AdapterStateModel) {
+        this.state = stateModel
         ListLogger.log(TAG, "loadFromModel , ${stateModel.toString()}")
-        mRecycler?.scrollToPosition(mState.scrollPosition)
+        mRecycler?.scrollToPosition(state.scrollPosition)
     }
 
-    private fun saveToModel(): AdapterStateModel {
+    fun saveToModel(): AdapterStateModel {
         var pos = (mRecycler?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-        if (pos >= getRestoreFocusOffset())
-            pos -= getRestoreFocusOffset()
-        mState.scrollPosition = pos
-        return mState
+        if (pos >= LOADING_OFFSET)
+            pos -= LOADING_OFFSET
+        state.scrollPosition = pos
+        return state
     }
 
     private fun setOnScrollListener(recycler: RecyclerView) {
@@ -186,15 +141,15 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
                 super.onScrolled(recyclerView, dx, dy)
                 val count = (recycler.layoutManager?.itemCount ?: 0) - 1
                 var lastItem = (recycler.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                if (lastItem + getLoadingOffset() <= count) {
-                    lastItem += getLoadingOffset()
+                if (lastItem + LOADING_OFFSET <= count) {
+                    lastItem += LOADING_OFFSET
                 }
-                if (count == lastItem && !mState.isLoading && mState.canLoadMore) {
+                if (count == lastItem && !state.isLoading && state.canLoadMore) {
                     ListLogger.log(TAG, "load more")
                     onLoadMoreListener?.invoke()
                     onLoadMorePagingListener?.invoke()
-                    if (onLoadMoreListener != null) {
-                        setLoading(true)
+                    if (onLoadMoreListener != null || onLoadMorePagingListener != null) {
+                        setLoadingMore(true)
                     }
                 }
             }
@@ -203,30 +158,15 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
 
     private fun setAnimation(container: View, position: Int) {
         if (getAnimationRes() != 0) {
-            if (position + 1 > mState.lastAnimatedPosition) {
-                var animation = AnimationUtils.loadAnimation(container.context, getAnimationRes());
+            if (position + 1 > state.lastAnimatedPosition) {
+                val animation = AnimationUtils.loadAnimation(container.context, getAnimationRes());
                 container.startAnimation(animation);
-                mState.lastAnimatedPosition = position + 1 ;
+                state.lastAnimatedPosition = position + 1 ;
             }
         }
     }
 
     inner class ProgressVH(itemView: View) : BaseViewHolder<T>(itemView)
-
-    inner class AdapterController(private val adapter: BaseLoadMoreAdapter<*>) {
-
-        fun getAdapterState() = mState
-
-        fun setLoading(value: Boolean) = adapter.setLoading(value)
-
-        fun onError() = adapter.onError()
-
-        fun onRetry() = adapter.onRetry()
-
-        fun saveToModel(): AdapterStateModel = adapter.saveToModel()
-
-        fun loadFromModel(stateModel: AdapterStateModel) = adapter.loadFromModel(stateModel)
-    }
 }
 
 abstract class BaseViewHolder <T>(itemView: View) : RecyclerView.ViewHolder(itemView) {

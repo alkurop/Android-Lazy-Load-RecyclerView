@@ -39,7 +39,7 @@ class UpdatingListExampleActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         if (savedInstanceState != null) {
-            if (mAdapter.realSize == 0) {
+            if (mAdapter.getItemsSize() == 0) {
                 startLoadingOperation(offset = 0)
             }
         }
@@ -59,6 +59,7 @@ class UpdatingListExampleActivity : AppCompatActivity() {
         }
         mList.swipeRefreshListener = {
             Log.d("loadingOperation", "loadingOperation")
+            mAdapter.clear()
             startLoadingOperation(offset = 0)
         }
     }
@@ -81,7 +82,8 @@ class UpdatingListExampleActivity : AppCompatActivity() {
 
     fun processResult(response: LongResponse) {
         val canLoadMore = (response.maxCount - response.data.size - response.offset) > 0
-        mAdapter.addItems(response.data, canLoadMore)
+        mAdapter.addItems(response.data )
+        mAdapter.setCanLoadMore(canLoadMore)
     }
 
     override fun onStop() {

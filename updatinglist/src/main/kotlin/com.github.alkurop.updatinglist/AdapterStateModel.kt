@@ -7,19 +7,32 @@ import java.util.*
 /**
  * Created by alkurop on 11.05.16.
  */
-class AdapterStateModel(var canLoadMore: Boolean,
-                        var lastAnimatedPosition: Int,
-                        var progressCount: Int,
-                        var currentPage: Int,
-                        var scrollPosition: Int,
-                        var isError: Boolean,
-                        var isLoading: Boolean,
-                        val items: MutableList<Parcelable>) : Parcelable {
-    constructor(source: Parcel) : this(1.toByte().equals(source.readByte()), source.readInt(), source.readInt(),
-              source.readInt(), source.readInt(), 1.toByte().equals(source.readByte()), 1.toByte().equals(source.readByte()), {
-        val l = ArrayList<Parcelable>(); source.readList(l, Parcelable::class.java.classLoader); l
-    }.invoke())
+class AdapterStateModel(
+          var canLoadMore: Boolean,
+          var lastAnimatedPosition: Int,
+          var progressCount: Int,
+          var currentPage: Int,
+          var scrollPosition: Int,
+          var isLoading: Boolean,
+          val items: MutableList<in Parcelable>) : Parcelable {
+    constructor(source: Parcel) :
+    this(1.toByte().equals(source.readByte()),
+              source.readInt(),
+              source.readInt(),
+              source.readInt(),
+              source.readInt(),
+              1.toByte().equals(source.readByte()),
+              { val l = ArrayList<Parcelable>(); source.readList(l, Parcelable::class.java.classLoader); l }.invoke())
 
+    fun reset() {
+        lastAnimatedPosition = 0
+        canLoadMore = false
+        currentPage = 0
+        isLoading = false
+        items.clear()
+        progressCount = 0
+        scrollPosition = 0
+    }
 
     override fun describeContents(): Int {
         return 0
@@ -32,7 +45,6 @@ class AdapterStateModel(var canLoadMore: Boolean,
         dest?.writeInt(currentPage)
         dest?.writeInt(scrollPosition)
         dest?.writeByte((if (isLoading) 1 else 0).toByte())
-        dest?.writeByte((if (isError) 1 else 0).toByte())
         dest?.writeList(items)
     }
 
