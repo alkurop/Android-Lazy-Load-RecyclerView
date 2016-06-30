@@ -110,15 +110,23 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
     }
 
     fun setLoadingMore(isLoading: Boolean) {
-        state.isLoading = isLoading
-        if (isLoading && getItemsSize() > 0) {
+        if (isLoading) showLoadMore()
+        else hideLoadMore()
+
+        ListLogger.log(TAG, "showloading , $isLoading")
+    }
+
+    fun showLoadMore() {
+        if (getItemsSize() > 0) {
+            state.isLoading = true
             state.progressCount = 1
             notifyItemInserted(itemCount - 1)
-        } else {
-            state.progressCount = 0
-            notifyItemRemoved(getItemsSize())
         }
-        ListLogger.log(TAG, "showloading , $isLoading")
+    }
+
+    fun hideLoadMore() {
+        state.progressCount = 0
+        notifyItemRemoved(getItemsSize())
     }
 
     fun loadFromModel(stateModel: AdapterStateModel) {

@@ -14,26 +14,12 @@ class UpdatingListView : FrameLayout {
     val TAG = UpdatingListView::class.java.simpleName
     val recycler: RecyclerView
     val swipeView: SwipeRefreshLayout
+    lateinit private var mAdapter: BaseLoadMoreAdapter<out Parcelable>
     private var progressView: View? = null
     private var emptyView: View? = null
-    lateinit private var mAdapter: BaseLoadMoreAdapter<out Parcelable>
-
-    var swipeRefreshListener: (() -> Unit)? = null
-        set(value) {
-            field = value;  swipeView.isEnabled = value != null
-        }
-
-    var loadMoreListener: ((offset: Int) -> Unit)? = null
-        set(value) {
-            field = value
-            mAdapter.onLoadMoreListener = { value?.invoke(mAdapter.getItemsSize()) }
-
-        }
-    var loadMorePagingListener: ((offset: Int) -> Unit)? = null
-        set(value) {
-            field = value
-            mAdapter.onLoadMoreListener = { value?.invoke(mAdapter.getItemsSize()) }
-        }
+    private var swipeRefreshListener: (() -> Unit)? = null
+    private var loadMoreListener: ((offset: Int) -> Unit)? = null
+    private var loadMorePagingListener: ((offset: Int) -> Unit)? = null
 
     @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, style: Int = 0) : super(context, attrs, style) {
         recycler = RecyclerView(context, attrs)
@@ -43,6 +29,21 @@ class UpdatingListView : FrameLayout {
         swipeView.addView(recycler)
         swipeView.isEnabled = false
         swipeView.setOnRefreshListener { refresh() }
+    }
+
+    fun setLoadMoreListener(listener: ((offset: Int) -> Unit)?) {
+        loadMoreListener = listener
+        mAdapter.onLoadMoreListener = { listener?.invoke(mAdapter.getItemsSize()) }
+    }
+
+    fun setLoadMorePagingListener(listener: ((offset: Int) -> Unit)?) {
+        loadMorePagingListener = listener
+        mAdapter.onLoadMoreListener = { listener?.invoke(mAdapter.getItemsSize()) }
+    }
+
+    fun setSwipeRefreshListener(listener: ((() -> Unit)?)) {
+        swipeRefreshListener = listener
+        swipeView.isEnabled = listener != null
     }
 
     private fun refresh() {
@@ -71,7 +72,7 @@ class UpdatingListView : FrameLayout {
 
     fun setProgressView(mProgressRes: Int) {
         val progressView = LayoutInflater.from(context).inflate(mProgressRes, this, false)
-        setEmptyView(progressView)
+        setProgressView(progressView)
     }
 
     fun setEmptyView(mEmptyRes: Int) {
@@ -92,7 +93,35 @@ class UpdatingListView : FrameLayout {
     }
 
     fun onStop() {
-        showLoading(false)
+        showLoading()
+        mAdapter.setLoadingMore(false)
+    }
+
+    fun setLogging(isLogging: Boolean) {
+        ListLogger.allowLogging = isLogging
+    }
+
+    fun showLoading() {
+        showEmpty(false)
+        if (!swipeView.isRefreshing && (mAdapter.getItemsSize() == 0)) {
+            progressView?.visibility = View.VISIBLE
+        }
+        ListLogger.log(TAG, "show loading")
+    }
+
+    fun hideLoading() {
+        swipeView.isRefreshing = false
+        progressView?.visibility = View.GONE
+        showEmpty(mAdapter.itemCount == 0)
+        ListLogger.log(TAG, "hide loading")
+    }
+
+    fun showLoading(isLoading: Boolean) {
+        if (isLoading) showLoading() else hideLoading()
+    }
+
+    fun onError() {
+        hideLoading()
         mAdapter.setLoadingMore(false)
     }
 
@@ -107,25 +136,6 @@ class UpdatingListView : FrameLayout {
         }
         super.onRestoreInstanceState(state);
         (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.adapterState)
-    }
-
-    fun showLoading(isLoading: Boolean) {
-        if (!isLoading) {
-            swipeView.isRefreshing = false
-            progressView?.visibility = View.GONE
-            showEmpty(mAdapter.itemCount == 0)
-        } else {
-            showEmpty(false)
-            if (!swipeView.isRefreshing && (mAdapter.getItemsSize() == 0)) {
-                progressView?.visibility = View.VISIBLE
-            }
-        }
-        ListLogger.log(TAG, "isLoading $isLoading")
-    }
-
-    fun onError() {
-        showLoading(false)
-        mAdapter.setLoadingMore(false)
     }
 }
 
