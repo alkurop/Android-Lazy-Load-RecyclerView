@@ -8,8 +8,7 @@ import android.view.ViewGroup
 /**
  * Created by alkurop on 30.06.16.
  */
-class ChildrenViewStateHelper(val viewGroup: ViewGroup) {
-    val DEFAULT_CHILDREN_STATE_KEY = ChildrenViewStateHelper::class.java.simpleName + ".childrenState"
+class ChildrenViewStateHelper (val viewGroup: ViewGroup) {
     fun saveChildrenState(): SparseArray<Parcelable> {
         val array = SparseArray<Parcelable>()
         for (i in 0..viewGroup.childCount - 1) {
@@ -31,5 +30,9 @@ class ChildrenViewStateHelper(val viewGroup: ViewGroup) {
             val childState = bundle.getSparseParcelableArray<Parcelable>(DEFAULT_CHILDREN_STATE_KEY)
             viewGroup.getChildAt(i).restoreHierarchyState(childState)
         }
+    }
+
+    companion object {
+        val DEFAULT_CHILDREN_STATE_KEY = ChildrenViewStateHelper::class.java.simpleName + ".childrenState"
     }
 }
