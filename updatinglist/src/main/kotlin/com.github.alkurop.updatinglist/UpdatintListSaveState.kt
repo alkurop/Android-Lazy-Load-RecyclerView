@@ -23,6 +23,7 @@ class UpdatingListSaveState : View.BaseSavedState {
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
+        super.writeToParcel(dest, flags);
         dest?.writeParcelable(adapterState, 0)
     }
 

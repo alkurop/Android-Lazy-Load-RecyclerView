@@ -1,11 +1,13 @@
 package com.github.alkurop.updatinglist
 
 import android.content.Context
+import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -93,7 +95,7 @@ class UpdatingListView : FrameLayout {
     }
 
     fun onStop() {
-        showLoading()
+        hideLoading()
         mAdapter.setLoadingMore(false)
     }
 
@@ -126,16 +128,31 @@ class UpdatingListView : FrameLayout {
     }
 
     override fun onSaveInstanceState(): Parcelable {
-        return UpdatingListSaveState(super.onSaveInstanceState(), (recycler.adapter as BaseLoadMoreAdapter<*>).saveToModel())
+        val state = Bundle()
+        state.putParcelable("superState", super.onSaveInstanceState());
+        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY, ChildrenViewStateHelper (this).saveChildrenState())
+        state.putParcelable("adapterModel", (recycler.adapter as BaseLoadMoreAdapter<*>).saveToModel())
+        return state
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
-        if (state !is UpdatingListSaveState) {
-            super.onRestoreInstanceState(state);
-            return;
+        if (state is Bundle) {
+            super.onRestoreInstanceState(state.getParcelable("superState"))
+            (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.getParcelable<AdapterStateModel>("adapterModel"))
+            ChildrenViewStateHelper (this).restoreChildrenState(state.getSparseParcelableArray
+            (ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
+
+        } else {
+            super.onRestoreInstanceState(state)
         }
-        super.onRestoreInstanceState(state);
-        (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.adapterState)
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
+        dispatchThawSelfOnly(container)
     }
 }
 
