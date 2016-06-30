@@ -51,7 +51,7 @@ class UpdatingListExampleActivity : AppCompatActivity() {
                   R.layout.example_native_loading_view,
                   R.layout.example_empty_view)
 
-        mList.adapter = mAdapter
+        mList.setAdapter(mAdapter)
         mList.loadMoreListener = {
             mSubscriptions.forEach { it.unsubscribe() }
             mSubscriptions.clear()
