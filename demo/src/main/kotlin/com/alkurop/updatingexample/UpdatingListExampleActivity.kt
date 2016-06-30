@@ -65,13 +65,13 @@ class UpdatingListExampleActivity : AppCompatActivity() {
     }
 
     fun startLoadingOperation(offset: Int) {
-        mList.isLoading = true
+        mList.showLoading(true)
         val sub = LongProcessMock.getLoadObservable(offset)
                   .subscribeOn(Schedulers.io())
                   .observeOn(AndroidSchedulers.mainThread())
                   .doOnTerminate {
                       Log.d("loadingOperation", "finish")
-                      mList.isLoading = false
+                      mList.showLoading(false)
                   }
                   .subscribe ({ processResult(it) }, {
                       mList.onError()
@@ -82,7 +82,7 @@ class UpdatingListExampleActivity : AppCompatActivity() {
 
     fun processResult(response: LongResponse) {
         val canLoadMore = (response.maxCount - response.data.size - response.offset) > 0
-        mAdapter.addItems(response.data )
+        mAdapter.addItems(response.data)
         mAdapter.setCanLoadMore(canLoadMore)
     }
 
