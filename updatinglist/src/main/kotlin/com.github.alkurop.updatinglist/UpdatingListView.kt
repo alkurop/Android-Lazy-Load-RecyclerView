@@ -12,7 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 
-class UpdatingListView : FrameLayout {
+open class UpdatingListView : FrameLayout {
     val TAG = UpdatingListView::class.java.simpleName
     val recycler: RecyclerView
     val swipeView: SwipeRefreshLayout
