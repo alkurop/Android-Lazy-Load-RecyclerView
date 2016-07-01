@@ -49,8 +49,7 @@ class UpdatingListView : FrameLayout {
     }
 
     private fun refresh() {
-        mAdapter.setLoadingMore(true)
-        swipeRefreshListener?.invoke()
+         swipeRefreshListener?.invoke()
         ListLogger.log(TAG, "refresh")
     }
 
