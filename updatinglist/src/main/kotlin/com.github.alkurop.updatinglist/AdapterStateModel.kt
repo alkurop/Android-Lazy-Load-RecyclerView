@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created by alkurop on 11.05.16.
  */
-class AdapterStateModel(
+open class AdapterStateModel(
         var canLoadMore: Boolean,
         var lastAnimatedPosition: Int,
         var progressCount: Int,
@@ -24,7 +24,7 @@ class AdapterStateModel(
             1.toByte().equals(source.readByte()),
             { val l = ArrayList<Parcelable>(); source.readList(l, Parcelable::class.java.classLoader); l }.invoke())
 
-    fun reset() {
+    open fun reset() {
         lastAnimatedPosition = 0
         canLoadMore = false
         currentPage = 0
@@ -49,6 +49,7 @@ class AdapterStateModel(
     }
 
     companion object {
+        fun getDefaultInstance() = AdapterStateModel(false, 0, 0, 0, 0, false, mutableListOf())
         @JvmField final val CREATOR: Parcelable.Creator<AdapterStateModel> = object : Parcelable.Creator<AdapterStateModel> {
             override fun createFromParcel(source: Parcel): AdapterStateModel {
                 return AdapterStateModel(source)

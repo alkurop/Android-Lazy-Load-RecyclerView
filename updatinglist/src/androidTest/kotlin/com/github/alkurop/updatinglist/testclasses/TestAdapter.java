@@ -1,4 +1,4 @@
-package com.github.alkurop.updatinglist.mock_classes;
+package com.github.alkurop.updatinglist.testclasses;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by alkurop on 01.07.16.
  */
-public class Adapter extends BaseLoadMoreAdapter<DataObject> {
+public class TestAdapter extends BaseLoadMoreAdapter<DataObject> {
     @NotNull
     @Override
     public BaseViewHolder<DataObject> onCreateProgressVH(@NotNull ViewGroup viewGroup) {
@@ -36,4 +36,5 @@ public class Adapter extends BaseLoadMoreAdapter<DataObject> {
             super(itemView);
         }
     }
+
 }

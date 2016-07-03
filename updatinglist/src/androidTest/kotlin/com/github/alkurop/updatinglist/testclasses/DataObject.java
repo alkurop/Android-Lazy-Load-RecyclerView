@@ -1,4 +1,4 @@
-package com.github.alkurop.updatinglist.mock_classes;
+package com.github.alkurop.updatinglist.testclasses;
 
 import android.os.Parcel;
 import android.os.Parcelable;

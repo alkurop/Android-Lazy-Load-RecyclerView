@@ -1,9 +1,8 @@
-package com.github.alkurop.updatinglist.mock_classes;
+package com.github.alkurop.updatinglist.testclasses;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import com.github.alkurop.updatinglist.R;
 
 /**
  * Created by alkurop on 01.07.16.

@@ -11,7 +11,7 @@ import android.view.animation.AnimationUtils
  * Created by alkurop on 26.04.16.
  * Set canLoadMore and isLoading when setting adapter items
  */
-abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<BaseViewHolder<T>>() {
+abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<BaseViewHolder<T>>() {
     private val VIEW_TYPE = -300
     private val PROGRESS_TYPE = -400
     private val LOADING_OFFSET = 3
@@ -19,7 +19,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
     private val TAG = BaseLoadMoreAdapter::class.java.simpleName
     var onLoadMoreListener: (() -> Unit)? = null
     var onLoadMorePagingListener: (() -> Unit)? = null
-    var state: AdapterStateModel = AdapterStateModel(false, 0, 0, 0, 0, false, mutableListOf())
+    var state: AdapterStateModel = AdapterStateModel.getDefaultInstance()
 
     abstract fun onCreateProgressVH(viewGroup: ViewGroup): BaseViewHolder<T>
 
@@ -36,7 +36,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
 
     fun getItemsSize() = state.items.size
 
-    fun addItems(newItems: List<T>) {
+    open fun addItems(newItems: List<T>) {
         setLoadingMore(false)
         val oldSize = getItemsSize()
         val delta = newItems.size
@@ -51,7 +51,6 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
     }
 
     fun addItem(item: T) {
-        setLoadingMore(false)
         addItemToPosition(item, getItemsSize())
     }
 
@@ -109,7 +108,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         super.onViewDetachedFromWindow(holder)
     }
 
-    fun setLoadingMore(isLoading: Boolean) {
+    open fun setLoadingMore(isLoading: Boolean) {
         if (isLoading) showLoadMore()
         else hideLoadMore()
 
@@ -126,6 +125,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
 
     fun hideLoadMore() {
         state.progressCount = 0
+        state.isLoading = false
         notifyItemRemoved(getItemsSize())
     }
 
@@ -169,7 +169,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
             if (position + 1 > state.lastAnimatedPosition) {
                 val animation = AnimationUtils.loadAnimation(container.context, getAnimationRes());
                 container.startAnimation(animation);
-                state.lastAnimatedPosition = position + 1 ;
+                state.lastAnimatedPosition = position + 1;
             }
         }
     }
@@ -177,7 +177,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
     inner class ProgressVH(itemView: View) : BaseViewHolder<T>(itemView)
 }
 
-abstract class BaseViewHolder <T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var container = itemView
     var data: T? = null
     open fun bind(data: T) {
