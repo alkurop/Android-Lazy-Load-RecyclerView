@@ -23,14 +23,17 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
         test {
             setRoot('src/androidTest')
         }
+        test.java.srcDirs += 'src/androidTest/kotlin'
+
     }
 }
 ext {
     supportVersion = "23.4.0"
+    mockitoVersion = "2.0.52-beta"
+    mockitoKotlinVersion= "0.5.1"
 }
 
 dependencies {
@@ -40,13 +43,16 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportVersion"
 
     androidTestCompile 'org.robolectric:robolectric:3.0'
-    androidTestCompile 'org.mockito:mockito-core:2.0.52-beta'
-    androidTestCompile 'org.powermock:powermock-mockito-release-full:1.6.4'
+    androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
+    androidTestCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
     androidTestCompile 'junit:junit:4.12'
-    testCompile 'org.powermock:powermock-mockito-release-full:1.6.4'
-    testCompile 'org.mockito:mockito-core:2.0.52-beta'
+    androidTestCompile 'org.assertj:assertj-core:3.5.1'
+
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.assertj:assertj-core:3.5.1'
 
 }
 

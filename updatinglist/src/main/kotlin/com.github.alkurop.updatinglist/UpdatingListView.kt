@@ -16,9 +16,9 @@ open class UpdatingListView : FrameLayout {
     val TAG = UpdatingListView::class.java.simpleName
     val recycler: RecyclerView
     val swipeView: SwipeRefreshLayout
-    lateinit private var mAdapter: BaseLoadMoreAdapter<out Parcelable>
-    private var progressView: View? = null
-    private var emptyView: View? = null
+    lateinit var mAdapter: BaseLoadMoreAdapter<out Parcelable>
+    private var mProgressView: View? = null
+    private var mEmptyView: View? = null
     private var swipeRefreshListener: (() -> Unit)? = null
     private var loadMoreListener: ((offset: Int) -> Unit)? = null
     private var loadMorePagingListener: ((offset: Int) -> Unit)? = null
@@ -54,7 +54,7 @@ open class UpdatingListView : FrameLayout {
     }
 
     private fun showEmpty(show: Boolean) {
-        emptyView?.visibility = if (show) View.VISIBLE else View.GONE
+        mEmptyView?.visibility = if (show) View.VISIBLE else View.GONE
         ListLogger.log(TAG, "showEmpty $show")
     }
 
@@ -82,18 +82,18 @@ open class UpdatingListView : FrameLayout {
     }
 
     fun setProgressView(mProgress: View) {
-        this.progressView = mProgress
+        this.mProgressView = mProgress
         addView(mProgress)
         mProgress.visibility = GONE
     }
 
     fun setEmptyView(mEmptyView: View) {
-        this.emptyView = mEmptyView
+        this.mEmptyView = mEmptyView
         addView(mEmptyView)
         mEmptyView.visibility = GONE
     }
 
-    fun onStop() {
+    open fun onStop() {
         hideLoading()
         mAdapter.setLoadingMore(false)
     }
@@ -105,14 +105,14 @@ open class UpdatingListView : FrameLayout {
     fun showLoading() {
         showEmpty(false)
         if (!swipeView.isRefreshing && (mAdapter.getItemsSize() == 0)) {
-            progressView?.visibility = View.VISIBLE
+            mProgressView?.visibility = View.VISIBLE
         }
         ListLogger.log(TAG, "show loading")
     }
 
     open fun hideLoading() {
         swipeView.isRefreshing = false
-        progressView?.visibility = View.GONE
+        mProgressView?.visibility = View.GONE
         showEmpty(mAdapter.itemCount == 0)
         ListLogger.log(TAG, "hide loading")
     }
@@ -138,9 +138,7 @@ open class UpdatingListView : FrameLayout {
         if (state is Bundle) {
             super.onRestoreInstanceState(state.getParcelable("superState"))
             (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.getParcelable<AdapterStateModel>("adapterModel"))
-            ChildrenViewStateHelper(this).restoreChildrenState(state.getSparseParcelableArray
-            (ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
-
+            ChildrenViewStateHelper(this).restoreChildrenState(state.getSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
         } else {
             super.onRestoreInstanceState(state)
         }
@@ -153,6 +151,9 @@ open class UpdatingListView : FrameLayout {
     override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
         dispatchThawSelfOnly(container)
     }
+
+    fun getEmptyView() = mEmptyView
+    fun getProgressView() = mProgressView
 }
 
 

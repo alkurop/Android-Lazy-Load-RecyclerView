@@ -129,7 +129,7 @@ abstract class BaseLoadMoreAdapter <T : Parcelable>() : RecyclerView.Adapter<Bas
         notifyItemRemoved(getItemsSize())
     }
 
-    fun loadFromModel(stateModel: AdapterStateModel) {
+    open fun loadFromModel(stateModel: AdapterStateModel) {
         this.state = stateModel
         ListLogger.log(TAG, "loadFromModel , ${stateModel.toString()}")
         mRecycler?.scrollToPosition(state.scrollPosition)
