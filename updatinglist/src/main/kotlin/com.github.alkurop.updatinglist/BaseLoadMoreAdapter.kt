@@ -31,7 +31,7 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
         state.reset()
         notifyDataSetChanged()
     }
-
+    @SuppressWarnings("unchecked")
     fun getItems(): MutableList<T> = state.items as MutableList<T>
 
     fun getItemsSize() = state.items.size
