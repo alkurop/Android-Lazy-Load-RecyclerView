@@ -7,6 +7,7 @@ import com.github.alkurop.updatinglist.mock_classes.TestActivity
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
@@ -25,13 +26,15 @@ open class UpdatingListViewTest {
 
     lateinit var list: UpdatingListView
     lateinit var listSpy: UpdatingListView
-    @Spy
+    @Mock
     lateinit var adapter: BaseLoadMoreAdapter<DataObject>
+    val adapterState =   AdapterStateModel(false, 0, 0, 0, 0, false, mutableListOf())
 
     @Before
     fun init() {
         MockitoAnnotations.initMocks(this)
         activity = Robolectric.buildActivity(TestActivity::class.java).create().start().resume().get()
+        Mockito.`when`(adapter.state).thenReturn(adapterState)
         list = UpdatingListView(activity)
         list.setAdapter(adapter)
         listSpy = spy(list)

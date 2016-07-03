@@ -49,7 +49,7 @@ open class UpdatingListView : FrameLayout {
     }
 
     private fun refresh() {
-         swipeRefreshListener?.invoke()
+        swipeRefreshListener?.invoke()
         ListLogger.log(TAG, "refresh")
     }
 
@@ -110,7 +110,7 @@ open class UpdatingListView : FrameLayout {
         ListLogger.log(TAG, "show loading")
     }
 
-    fun hideLoading() {
+    open fun hideLoading() {
         swipeView.isRefreshing = false
         progressView?.visibility = View.GONE
         showEmpty(mAdapter.itemCount == 0)
@@ -129,7 +129,7 @@ open class UpdatingListView : FrameLayout {
     override fun onSaveInstanceState(): Parcelable {
         val state = Bundle()
         state.putParcelable("superState", super.onSaveInstanceState());
-        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY, ChildrenViewStateHelper (this).saveChildrenState())
+        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY, ChildrenViewStateHelper(this).saveChildrenState())
         state.putParcelable("adapterModel", (recycler.adapter as BaseLoadMoreAdapter<*>).saveToModel())
         return state
     }
@@ -138,7 +138,7 @@ open class UpdatingListView : FrameLayout {
         if (state is Bundle) {
             super.onRestoreInstanceState(state.getParcelable("superState"))
             (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.getParcelable<AdapterStateModel>("adapterModel"))
-            ChildrenViewStateHelper (this).restoreChildrenState(state.getSparseParcelableArray
+            ChildrenViewStateHelper(this).restoreChildrenState(state.getSparseParcelableArray
             (ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
 
         } else {

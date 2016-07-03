@@ -8,21 +8,21 @@ import java.util.*
  * Created by alkurop on 11.05.16.
  */
 class AdapterStateModel(
-          var canLoadMore: Boolean,
-          var lastAnimatedPosition: Int,
-          var progressCount: Int,
-          var currentPage: Int,
-          var scrollPosition: Int,
-          var isLoading: Boolean,
-          val items: MutableList<in Parcelable>) : Parcelable {
+        var canLoadMore: Boolean,
+        var lastAnimatedPosition: Int,
+        var progressCount: Int,
+        var currentPage: Int,
+        var scrollPosition: Int,
+        var isLoading: Boolean,
+        val items: MutableList<in Parcelable>) : Parcelable {
     constructor(source: Parcel) :
     this(1.toByte().equals(source.readByte()),
-              source.readInt(),
-              source.readInt(),
-              source.readInt(),
-              source.readInt(),
-              1.toByte().equals(source.readByte()),
-              { val l = ArrayList<Parcelable>(); source.readList(l, Parcelable::class.java.classLoader); l }.invoke())
+            source.readInt(),
+            source.readInt(),
+            source.readInt(),
+            source.readInt(),
+            1.toByte().equals(source.readByte()),
+            { val l = ArrayList<Parcelable>(); source.readList(l, Parcelable::class.java.classLoader); l }.invoke())
 
     fun reset() {
         lastAnimatedPosition = 0

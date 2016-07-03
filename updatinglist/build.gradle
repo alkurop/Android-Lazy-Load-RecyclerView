@@ -23,6 +23,7 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
         test {
             setRoot('src/androidTest')
         }
@@ -40,7 +41,9 @@ dependencies {
 
     androidTestCompile 'org.robolectric:robolectric:3.0'
     androidTestCompile 'org.mockito:mockito-core:2.0.52-beta'
+    androidTestCompile 'org.powermock:powermock-mockito-release-full:1.6.4'
     androidTestCompile 'junit:junit:4.12'
+    testCompile 'org.powermock:powermock-mockito-release-full:1.6.4'
     testCompile 'org.mockito:mockito-core:2.0.52-beta'
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
