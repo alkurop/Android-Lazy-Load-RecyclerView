@@ -9,5 +9,5 @@ android:
 
 script:
    - ./gradlew build connectedCheck
-  jdk:
+jdk:
      - oraclejdk8
