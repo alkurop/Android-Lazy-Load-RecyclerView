@@ -18,11 +18,9 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricGradleTestRunner::class)
 @Config(constants = BuildConfig::class, sdk = intArrayOf(21))
 class BaseLoadMoreAdapterTest : BaseTestClass() {
-
     @Test
     fun testClear() {
         val spyState = spy(adapterSpy.state)
-
         adapterSpy.state = spyState
         adapterSpy.clear()
         verify(spyState, times(1)).reset()
@@ -47,7 +45,7 @@ class BaseLoadMoreAdapterTest : BaseTestClass() {
 
     @Test
     fun testAddItem() {
-        val rrr = Math.abs(Math.random()*1000).toInt()
+        val rrr = Math.abs(Math.random() * 1000).toInt()
         for (i in 1..rrr) {
             adapterSpy.addItem(any())
         }
@@ -58,9 +56,9 @@ class BaseLoadMoreAdapterTest : BaseTestClass() {
     @Test
     fun testAddItemToPosition() {
         val data = DataObject()
-        val rrr = Math.abs(Math.random()*1000).toInt()
+        val rrr = Math.abs(Math.random() * 1000).toInt()
         for (i in 1..rrr) {
-            adapterSpy.addItemToPosition(data,0)
+            adapterSpy.addItemToPosition(data, 0)
         }
         verify(adapterSpy, times(rrr)).setLoadingMore(false)
         assert(adapter.state.items.contains(data))

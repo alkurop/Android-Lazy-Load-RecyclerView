@@ -31,6 +31,8 @@ open class UpdatingListView : FrameLayout {
         swipeView.addView(recycler)
         swipeView.isEnabled = false
         swipeView.setOnRefreshListener { refresh() }
+        swipeView.id = 666
+        recycler.id = 777
     }
 
     fun setLoadMoreListener(listener: ((offset: Int) -> Unit)?) {
