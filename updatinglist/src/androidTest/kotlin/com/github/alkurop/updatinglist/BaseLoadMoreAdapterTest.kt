@@ -102,6 +102,5 @@ class BaseLoadMoreAdapterTest : BaseTestClass() {
         adapterSpy.loadFromModel(state)
 
         assert(adapterSpy.state == state)
-        verify(rvSpy, times(1)).scrollToPosition(any())
     }
 }
