@@ -33,6 +33,8 @@ open class UpdatingListView : FrameLayout {
         swipeView.setOnRefreshListener { refresh() }
         swipeView.id = 666
         recycler.id = 777
+        if(id ==View.NO_ID)
+            id = 555
     }
 
     fun setLoadMoreListener(listener: ((offset: Int) -> Unit)?) {
@@ -95,7 +97,7 @@ open class UpdatingListView : FrameLayout {
         mEmptyView.visibility = GONE
     }
 
-    open fun onStop() {
+    open fun stopLoading() {
         hideLoading()
         mAdapter.setLoadingMore(false)
     }
@@ -129,6 +131,7 @@ open class UpdatingListView : FrameLayout {
     }
 
     override fun onSaveInstanceState(): Parcelable {
+        stopLoading()
         val state = Bundle()
         state.putParcelable("superState", super.onSaveInstanceState());
         state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY, ChildrenViewStateHelper(this).saveChildrenState())

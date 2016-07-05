@@ -22,7 +22,7 @@ import rx.schedulers.Schedulers
  * Created by alkurop on 26.04.16.
  */
 class UpdatingListExampleActivity : AppCompatActivity() {
-    val mAdapter: ExampleAdapter by lazy { ExampleAdapter () }
+    val mAdapter: ExampleAdapter by lazy { ExampleAdapter() }
     val mSubscriptions: MutableList<Subscription> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +45,11 @@ class UpdatingListExampleActivity : AppCompatActivity() {
 
     fun initUpdatingList() {
         list.setLoadingViews(
-                  R.layout.example_native_loading_view,
-                  R.layout.example_empty_view)
+                R.layout.example_native_loading_view,
+                R.layout.example_empty_view)
 
         list.setAdapter(mAdapter)
-        list.setLoadMoreListener  {
+        list.setLoadMoreListener {
             mSubscriptions.forEach { it.unsubscribe() }
             mSubscriptions.clear()
             startLoadingOperation(offset = it)
@@ -64,15 +64,15 @@ class UpdatingListExampleActivity : AppCompatActivity() {
     fun startLoadingOperation(offset: Int) {
         list.showLoading(true)
         val sub = LongProcessMock.getLoadObservable(offset)
-                  .subscribeOn(Schedulers.io())
-                  .observeOn(AndroidSchedulers.mainThread())
-                  .doOnTerminate {
-                      list.showLoading(false)
-                  }
-                  .subscribe ({ processResult(it) }, {
-                      list.onError()
-                      it.printStackTrace()
-                  })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate {
+                    list.showLoading(false)
+                }
+                .subscribe({ processResult(it) }, {
+                    list.onError()
+                    it.printStackTrace()
+                })
         mSubscriptions.add(sub)
     }
 
@@ -83,7 +83,6 @@ class UpdatingListExampleActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        list.onStop()
         mSubscriptions.forEach { it.unsubscribe() }
         mSubscriptions.clear()
         super.onStop()

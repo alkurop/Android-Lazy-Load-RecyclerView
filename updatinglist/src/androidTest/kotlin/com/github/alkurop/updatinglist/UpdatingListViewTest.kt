@@ -18,7 +18,7 @@ open class UpdatingListViewTest : BaseTestClass() {
 
     @Test
     fun testOnStop() {
-        listSpy.onStop()
+        listSpy.`cancelAllLoading\`()
 
         verify(listSpy, times(1)).hideLoading()
         verify(adapterSpy, times(1)).setLoadingMore(false)

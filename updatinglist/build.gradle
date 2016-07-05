@@ -74,7 +74,7 @@ buildscript {
 publish {
     groupId = 'com.github.alkurop'
     artifactId = 'updatinglist'
-    publishVersion = '0.1.3'
+    publishVersion = '0.1.5'
     desc = 'A small library containing wrapper around recycler view'
     licences = ['MIT']
     website = 'https://github.com/alkurop/UI'
