@@ -13,12 +13,11 @@ import org.mockito.Mockito.verify
 /**
  * Created by alkurop on 01.07.16.
  */
-
 open class UpdatingListViewTest : BaseTestClass() {
 
     @Test
     fun testOnStop() {
-        listSpy.`cancelAllLoading\`()
+        listSpy.stopLoading()
 
         verify(listSpy, times(1)).hideLoading()
         verify(adapterSpy, times(1)).setLoadingMore(false)

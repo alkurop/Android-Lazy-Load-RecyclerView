@@ -12,12 +12,10 @@ open class AdapterStateModel(
         var lastAnimatedPosition: Int,
         var progressCount: Int,
         var currentPage: Int,
-        var scrollPosition: Int,
         var isLoading: Boolean,
         val items: MutableList<in Parcelable>) : Parcelable {
     constructor(source: Parcel) :
     this(1.toByte().equals(source.readByte()),
-            source.readInt(),
             source.readInt(),
             source.readInt(),
             source.readInt(),
@@ -31,7 +29,6 @@ open class AdapterStateModel(
         isLoading = false
         items.clear()
         progressCount = 0
-        scrollPosition = 0
     }
 
     override fun describeContents(): Int {
@@ -43,13 +40,12 @@ open class AdapterStateModel(
         dest?.writeInt(lastAnimatedPosition)
         dest?.writeInt(progressCount)
         dest?.writeInt(currentPage)
-        dest?.writeInt(scrollPosition)
         dest?.writeByte((if (isLoading) 1 else 0).toByte())
         dest?.writeList(items)
     }
 
     companion object {
-        fun getDefaultInstance() = AdapterStateModel(false, 0, 0, 0, 0, false, mutableListOf())
+        fun getDefaultInstance() = AdapterStateModel(false, 0, 0, 0, false, mutableListOf())
         @JvmField final val CREATOR: Parcelable.Creator<AdapterStateModel> = object : Parcelable.Creator<AdapterStateModel> {
             override fun createFromParcel(source: Parcel): AdapterStateModel {
                 return AdapterStateModel(source)

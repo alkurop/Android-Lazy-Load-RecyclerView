@@ -33,7 +33,7 @@ open class UpdatingListView : FrameLayout {
         swipeView.setOnRefreshListener { refresh() }
         swipeView.id = 666
         recycler.id = 777
-        if(id ==View.NO_ID)
+        if (id == View.NO_ID)
             id = 555
     }
 

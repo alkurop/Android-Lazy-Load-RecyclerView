@@ -31,6 +31,7 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
         state.reset()
         notifyDataSetChanged()
     }
+
     @SuppressWarnings("unchecked")
     fun getItems(): MutableList<T> = state.items as MutableList<T>
 
@@ -132,14 +133,12 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
     open fun loadFromModel(stateModel: AdapterStateModel) {
         this.state = stateModel
         ListLogger.log(TAG, "loadFromModel , ${stateModel.toString()}")
-        mRecycler?.scrollToPosition(state.scrollPosition)
     }
 
     fun saveToModel(): AdapterStateModel {
         var pos = (mRecycler?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
         if (pos >= LOADING_OFFSET)
             pos -= LOADING_OFFSET
-        state.scrollPosition = pos
         return state
     }
 
