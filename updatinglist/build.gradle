@@ -1,17 +1,16 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.novoda.bintray-release'
 
 
 android {
 
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }
@@ -31,9 +30,9 @@ android {
     }
 }
 ext {
-    supportVersion = "23.4.0"
+    supportVersion = "24.0.0"
     mockitoVersion = "2.0.52-beta"
-    mockitoKotlinVersion= "0.5.1"
+    mockitoKotlinVersion = "0.5.1"
 }
 
 dependencies {
@@ -61,14 +60,13 @@ kapt {
 }
 
 buildscript {
-     repositories {
+    repositories {
         mavenCentral()
         jcenter()
     }
     dependencies {
         classpath 'com.novoda:bintray-release:0.3.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
     }
 }
 publish {
