@@ -24,9 +24,9 @@ open class UpdatingListView : FrameLayout {
     private var loadMorePagingListener: ((offset: Int) -> Unit)? = null
 
     @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, style: Int = 0) : super(context, attrs, style) {
-        recycler = RecyclerView(context, attrs)
+        recycler = RecyclerView(context)
         recycler.layoutManager = LinearLayoutManager(context)
-        swipeView = SwipeRefreshLayout(context, attrs)
+        swipeView = SwipeRefreshLayout(context)
         addView(swipeView)
         swipeView.addView(recycler)
         swipeView.isEnabled = false
