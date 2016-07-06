@@ -95,7 +95,7 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
 
     override fun onBindViewHolder(viewHolder: BaseViewHolder<T>, position: Int, payloads: MutableList<Any>?) {
         if (getItemsSize() > position) {
-            viewHolder.bind(getItems()[position],payloads)
+            viewHolder.bind(getItems()[position], payloads)
         }
     }
 
@@ -183,10 +183,8 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
 abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var container = itemView
     var data: T? = null
-    open fun bind(data: T) {
-        this.data = data
-    }
-    open fun bind(data: T, payloads: MutableList<Any>?) {
+
+    @JvmOverloads open fun bind(data: T, payloads: MutableList<Any>? = null) {
         this.data = data
     }
 }
