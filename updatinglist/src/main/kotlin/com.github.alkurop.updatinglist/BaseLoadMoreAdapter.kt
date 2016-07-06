@@ -93,6 +93,12 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
         setAnimation(viewHolder.container, position)
     }
 
+    override fun onBindViewHolder(viewHolder: BaseViewHolder<T>, position: Int, payloads: MutableList<Any>?) {
+        if (getItemsSize() > position) {
+            viewHolder.bind(getItems()[position],payloads)
+        }
+    }
+
     override fun getItemCount(): Int {
         return if (getItemsSize() > 0) getItemsSize() + state.progressCount else 0
     }
@@ -178,6 +184,9 @@ abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemV
     var container = itemView
     var data: T? = null
     open fun bind(data: T) {
+        this.data = data
+    }
+    open fun bind(data: T, payloads: MutableList<Any>?) {
         this.data = data
     }
 }
