@@ -96,7 +96,8 @@ open class UpdatingListView : FrameLayout {
 
     open fun stopLoading() {
         hideLoading()
-        mAdapter.setLoadingMore(false)
+        if (mAdapter.state.isLoading)
+            mAdapter.setLoadingMore(false)
     }
 
     fun setLogging(isLogging: Boolean) {
@@ -156,6 +157,7 @@ open class UpdatingListView : FrameLayout {
 
     //methods used in tests
     fun getEmptyView() = mEmptyView
+
     fun getProgressView() = mProgressView
 }
 
