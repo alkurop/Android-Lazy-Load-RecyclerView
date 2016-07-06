@@ -24,17 +24,14 @@ open class UpdatingListView : FrameLayout {
     private var loadMorePagingListener: ((offset: Int) -> Unit)? = null
 
     @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, style: Int = 0) : super(context, attrs, style) {
-        recycler = RecyclerView(context)
+        View.inflate(context, R.layout.list_layout, this)
+        recycler = findViewById(R.id.recyclerView) as RecyclerView
         recycler.layoutManager = LinearLayoutManager(context)
-        swipeView = SwipeRefreshLayout(context)
-        addView(swipeView)
-        swipeView.addView(recycler)
+        swipeView = findViewById(R.id.swipeRefresh) as SwipeRefreshLayout
         swipeView.isEnabled = false
         swipeView.setOnRefreshListener { refresh() }
-        swipeView.id = 666
-        recycler.id = 777
         if (id == View.NO_ID)
-            id = 555
+            id = 1011012
     }
 
     fun setLoadMoreListener(listener: ((offset: Int) -> Unit)?) {
