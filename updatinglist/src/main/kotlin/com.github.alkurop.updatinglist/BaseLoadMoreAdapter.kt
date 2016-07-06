@@ -1,17 +1,17 @@
 package com.github.alkurop.updatinglist
 
-import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import java.util.*
 
 /**
  * Created by alkurop on 26.04.16.
  * Set canLoadMore and isLoading when setting adapter items
  */
-abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<BaseViewHolder<T>>() {
+abstract class BaseLoadMoreAdapter<T>() : RecyclerView.Adapter<BaseViewHolder<T>>() {
     private val VIEW_TYPE = -300
     private val PROGRESS_TYPE = -400
     private val LOADING_OFFSET = 3
@@ -32,9 +32,12 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
         notifyDataSetChanged()
     }
 
-    fun getItems(): MutableList<T> = state.items as MutableList<T>
+    fun getItems(): ArrayList<T> = state.items as ArrayList<T>
 
     fun getItemsSize() = state.items.size
+    open fun addItemsOnRestore(newItems: List<T>) {
+        getItems().addAll(newItems)
+    }
 
     open fun addItems(newItems: List<T>) {
         setLoadingMore(false)
@@ -140,9 +143,6 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
     }
 
     fun saveToModel(): AdapterStateModel {
-        var pos = (mRecycler?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-        if (pos >= LOADING_OFFSET)
-            pos -= LOADING_OFFSET
         return state
     }
 
@@ -183,15 +183,16 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
 abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var container = itemView
     var data: T? = null
-
-    open fun bind(data: T, payloads: MutableList<Any>? = null) {
-        this.data = data
-    }
-
     open fun bind(data: T) {
         this.data = data
     }
+
+    open fun bind(data: T, payloads: MutableList<Any>? = null) {
+        bind(data)
+    }
 }
+
+
 
 
 

@@ -128,33 +128,6 @@ open class UpdatingListView : FrameLayout {
         mAdapter.setLoadingMore(false)
     }
 
-    override fun onSaveInstanceState(): Parcelable {
-        stopLoading()
-        val state = Bundle()
-        state.putParcelable("superState", super.onSaveInstanceState());
-        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY, ChildrenViewStateHelper(this).saveChildrenState())
-        state.putParcelable("adapterModel", (recycler.adapter as BaseLoadMoreAdapter<*>).saveToModel())
-        return state
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable) {
-        if (state is Bundle) {
-            super.onRestoreInstanceState(state.getParcelable("superState"))
-            (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.getParcelable<AdapterStateModel>("adapterModel"))
-            ChildrenViewStateHelper(this).restoreChildrenState(state.getSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
-        } else {
-            super.onRestoreInstanceState(state)
-        }
-    }
-
-    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
-        dispatchFreezeSelfOnly(container)
-    }
-
-    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
-        dispatchThawSelfOnly(container)
-    }
-
     //methods used in tests
     fun getEmptyView() = mEmptyView
 

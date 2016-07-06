@@ -1,11 +1,7 @@
 package com.github.alkurop.updatinglist
 
-import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
-import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.times
-import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.mockito.Mockito.verify
 
@@ -46,24 +42,5 @@ open class UpdatingListViewTest : BaseTestClass() {
 
         verify(listSpy, times(1)).hideLoading()
         verify(adapterSpy, times(1)).setLoadingMore(false)
-    }
-
-    @Test
-    fun testOnSaveInstanceState() {
-        val state = listSpy.testOnSaveInstanceState()
-        val b = state as Bundle
-
-        assertNotNull(b.getParcelable<AdapterStateModel>("adapterModel"))
-        assertNotNull(b.getParcelable<Parcelable>("superState"))
-        assertNotNull(b.getSparseParcelableArray<Parcelable>(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
-    }
-
-    @Test
-    fun testOnRestoreInstanceState() {
-        val state = listSpy.testOnSaveInstanceState()
-        val b = state as Bundle
-        list.testOnRestoreInstanceState(b)
-
-        verify(adapterSpy, times(1)).loadFromModel(any())
     }
 }
