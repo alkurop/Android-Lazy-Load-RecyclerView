@@ -32,7 +32,6 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
         notifyDataSetChanged()
     }
 
-    @SuppressWarnings("unchecked")
     fun getItems(): MutableList<T> = state.items as MutableList<T>
 
     fun getItemsSize() = state.items.size
@@ -112,7 +111,6 @@ abstract class BaseLoadMoreAdapter<T : Parcelable>() : RecyclerView.Adapter<Base
     open fun setLoadingMore(isLoading: Boolean) {
         if (isLoading) showLoadMore()
         else hideLoadMore()
-
         ListLogger.log(TAG, "showloading , $isLoading")
     }
 

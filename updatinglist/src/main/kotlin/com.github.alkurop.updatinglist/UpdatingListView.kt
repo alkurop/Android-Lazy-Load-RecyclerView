@@ -154,6 +154,7 @@ open class UpdatingListView : FrameLayout {
         dispatchThawSelfOnly(container)
     }
 
+    //methods used in tests
     fun getEmptyView() = mEmptyView
     fun getProgressView() = mProgressView
 }

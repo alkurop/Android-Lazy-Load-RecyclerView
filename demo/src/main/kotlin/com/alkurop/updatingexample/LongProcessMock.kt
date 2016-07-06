@@ -27,14 +27,16 @@ object LongProcessMock {
 
     private fun load(offset: Int): LongResponse {
         TimeUnit.SECONDS.sleep(seconds)
-        var count = maxItems - offset
-        if (count > pageSize)
-            count = pageSize
-        if (count < 0)
-            count == 0
+        val remainingItemsCount = maxItems - offset
+        val count =
+                  if (remainingItemsCount > pageSize)
+                      pageSize
+                  else if (remainingItemsCount < 0)
+                      0
+                  else remainingItemsCount
         val dataList = mutableListOf<ILongProcessData>()
         for (i in 1..count) {
-            if (i % 3 == 0) {
+            if (i % 3 == 1) {
                 dataList.add(LongProcessImageData("https://pp.vk.me/c633920/v633920030/e427/_rt6urzI2Wg.jpg"))
             } else {
                 dataList.add(LongProcessIntData(offset + i - 1))
