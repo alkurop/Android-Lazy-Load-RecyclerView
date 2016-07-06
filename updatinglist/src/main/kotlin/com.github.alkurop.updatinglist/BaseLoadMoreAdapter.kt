@@ -184,7 +184,11 @@ abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemV
     var container = itemView
     var data: T? = null
 
-    @JvmOverloads open fun bind(data: T, payloads: MutableList<Any>? = null) {
+    open fun bind(data: T, payloads: MutableList<Any>? = null) {
+        this.data = data
+    }
+
+    open fun bind(data: T) {
         this.data = data
     }
 }
