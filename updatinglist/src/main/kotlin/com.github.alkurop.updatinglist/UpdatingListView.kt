@@ -16,7 +16,7 @@ open class UpdatingListView : FrameLayout {
     val TAG = UpdatingListView::class.java.simpleName
     val recycler: RecyclerView
     val swipeView: SwipeRefreshLayout
-    lateinit var mAdapter: BaseLoadMoreAdapter<out Parcelable>
+    lateinit var mAdapter: BaseLoadMoreAdapter<out Any>
     private var mProgressView: View? = null
     private var mEmptyView: View? = null
     private var swipeRefreshListener: (() -> Unit)? = null
@@ -41,7 +41,7 @@ open class UpdatingListView : FrameLayout {
 
     fun setLoadMorePagingListener(listener: ((offset: Int) -> Unit)?) {
         loadMorePagingListener = listener
-        mAdapter.onLoadMoreListener = { listener?.invoke(mAdapter.getItemsSize()) }
+        mAdapter.onLoadMoreListener = { listener?.invoke(mAdapter.state.currentPage) }
     }
 
     fun setSwipeRefreshListener(listener: ((() -> Unit)?)) {
@@ -59,7 +59,7 @@ open class UpdatingListView : FrameLayout {
         ListLogger.log(TAG, "showEmpty $show")
     }
 
-    fun setAdapter(adapter: BaseLoadMoreAdapter<out Parcelable>) {
+    fun setAdapter(adapter: BaseLoadMoreAdapter<out Any>) {
         mAdapter = adapter
         recycler.adapter = adapter
         if (loadMoreListener != null) {
@@ -126,6 +126,33 @@ open class UpdatingListView : FrameLayout {
     fun onError() {
         hideLoading()
         mAdapter.setLoadingMore(false)
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        stopLoading()
+        val state = Bundle()
+        state.putParcelable("superState", super.onSaveInstanceState());
+        state.putSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY, ChildrenViewStateHelper(this).saveChildrenState())
+        state.putParcelable("adapterModel", (recycler.adapter as BaseLoadMoreAdapter<*>).saveToModel())
+        return state
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            super.onRestoreInstanceState(state.getParcelable("superState"))
+            (recycler.adapter as BaseLoadMoreAdapter<*>).loadFromModel(state.getParcelable<AdapterStateModel>("adapterModel"))
+            ChildrenViewStateHelper(this).restoreChildrenState(state.getSparseParcelableArray(ChildrenViewStateHelper.DEFAULT_CHILDREN_STATE_KEY))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable>?) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>?) {
+        dispatchThawSelfOnly(container)
     }
 
     //methods used in tests

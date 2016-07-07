@@ -35,6 +35,7 @@ abstract class BaseLoadMoreAdapter<T>() : RecyclerView.Adapter<BaseViewHolder<T>
     fun getItems(): ArrayList<T> = state.items as ArrayList<T>
 
     fun getItemsSize() = state.items.size
+
     open fun addItemsOnRestore(newItems: List<T>) {
         getItems().addAll(newItems)
     }
@@ -191,7 +192,6 @@ abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemV
         bind(data)
     }
 }
-
 
 
 
