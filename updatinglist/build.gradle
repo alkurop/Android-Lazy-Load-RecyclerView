@@ -4,12 +4,12 @@ apply plugin: 'com.novoda.bintray-release'
 
 android {
 
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -30,7 +30,7 @@ android {
 }
 
 ext {
-    supportVersion = "24.0.0"
+    supportVersion = "23.4.0"
     mockitoVersion = "2.0.52-beta"
     mockitoKotlinVersion = "0.5.1"
 }
@@ -72,7 +72,7 @@ buildscript {
 publish {
     groupId = 'com.github.alkurop'
     artifactId = 'updatinglist'
-    publishVersion = '0.2.1'
+    publishVersion = '0.2.2'
     desc = 'A small library containing wrapper around recycler view'
     licences = ['MIT']
     website = 'https://github.com/alkurop/UI'
