@@ -72,6 +72,11 @@ abstract class BaseLoadMoreAdapter<T>() : RecyclerView.Adapter<BaseViewHolder<T>
         return getItems()[position]
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder<T>?) {
+        super.onViewRecycled(holder)
+        holder?.unbind()
+    }
+
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.mRecycler = recyclerView
@@ -190,6 +195,10 @@ abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemV
 
     open fun bind(data: T, payloads: MutableList<Any>? = null) {
         bind(data)
+    }
+
+    open fun unbind() {
+
     }
 }
 
