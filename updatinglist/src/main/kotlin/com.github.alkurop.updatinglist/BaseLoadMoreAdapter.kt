@@ -61,8 +61,10 @@ abstract class BaseLoadMoreAdapter<T>() : RecyclerView.Adapter<BaseViewHolder<T>
     fun addItemToPosition(item: T, position: Int) {
         setLoadingMore(false)
         getItems().add(position, item)
+        state.lastAnimatedPosition +=1
         notifyItemInserted(position)
-        ListLogger.log(TAG, "add item");
+        ListLogger.log(TAG, "add item")
+
     }
 
     fun getItem(position: Int): T? {
