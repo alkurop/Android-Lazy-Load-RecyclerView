@@ -5,8 +5,16 @@ A simple library, that helps master load more feature with RecyclerView.
 Written in kotlin, supported by java
 
 
-Available through   **jcenter**   
+Available through   jcenter
 ```
+
+repositories {
+...
+  jcenter()
+...        
+}
+
+
 compile "com.github.alkurop:updatinglist:0.2.5"
 ```
 
