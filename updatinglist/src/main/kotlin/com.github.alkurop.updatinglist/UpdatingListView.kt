@@ -1,5 +1,6 @@
 package com.github.alkurop.updatinglist
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
@@ -23,11 +24,12 @@ open class UpdatingListView : FrameLayout {
     private var loadMoreListener: ((offset: Int) -> Unit)? = null
     private var loadMorePagingListener: ((offset: Int) -> Unit)? = null
 
+    @SuppressLint("ResourceType")
     @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, style: Int = 0) : super(context, attrs, style) {
         View.inflate(context, R.layout.list_layout, this)
-        recycler = findViewById(R.id.recyclerView) as RecyclerView
+        recycler = findViewById(R.id.recyclerView)
         recycler.layoutManager = LinearLayoutManager(context)
-        swipeView = findViewById(R.id.swipeRefresh) as SwipeRefreshLayout
+        swipeView = findViewById(R.id.swipeRefresh)
         swipeView.isEnabled = false
         swipeView.setOnRefreshListener { refresh() }
         if (id == View.NO_ID)

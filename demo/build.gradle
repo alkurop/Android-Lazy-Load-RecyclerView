@@ -25,22 +25,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":updatinglist")
-    testCompile 'junit:junit:4.12'
-    compile "com.android.support:recyclerview-v7:$supportVersion"
-    compile "com.android.support:appcompat-v7:$supportVersion"
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.squareup.picasso:picasso:2.5.2'
-}
-
-kapt {
-    generateStubs = true
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(":updatinglist")
+    testImplementation 'junit:junit:4.12'
+    implementation "com.android.support:recyclerview-v7:$supportVersion"
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation 'io.reactivex:rxandroid:1.1.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.3'
     repositories {
         mavenCentral()
         jcenter()

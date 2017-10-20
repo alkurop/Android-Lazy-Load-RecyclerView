@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.novoda.bintray-release'
 
 android {
 
@@ -30,26 +29,22 @@ android {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:recyclerview-v7:$supportVersion"
-    compile "com.android.support:appcompat-v7:$supportVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:recyclerview-v7:$supportVersion"
+    implementation "com.android.support:appcompat-v7:$supportVersion"
 
-    androidTestCompile "org.robolectric:robolectric:$robolectricVersion"
-    androidTestCompile "org.mockito:mockito-core:$mockitoVersion"
-    androidTestCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile  "org.assertj:assertj-core:$assertjVersion"
+    androidTestImplementation "org.robolectric:robolectric:$robolectricVersion"
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation  "org.assertj:assertj-core:$assertjVersion"
 
-    testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:$robolectricVersion"
-    testCompile "org.assertj:assertj-core:$assertjVersion"
-}
-
-kapt {
-    generateStubs = true
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
 }
 
 buildscript {
@@ -58,23 +53,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.novoda:bintray-release:0.3.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-publish {
-    groupId = 'com.github.alkurop'
-    artifactId = 'updatinglist'
-    publishVersion = "$publishVersion"
-    desc = 'A small library containing wrapper around recycler view'
-    licences = ['MIT']
-    website = 'https://github.com/alkurop/UI'
-}
 
-allprojects {
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-    }
-}
