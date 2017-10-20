@@ -3,17 +3,8 @@ package com.alkurop.updatingexample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.github.alkurop.updatinglist.BaseLoadMoreAdapter
-import com.github.alkurop.updatinglist.BaseViewHolder
-import com.github.alkurop.updatinglist.UpdatingListView
-import com.squareup.picasso.Picasso
 
 import kotlinx.android.synthetic.main.example_activity_main.*
-import kotlinx.android.synthetic.main.example_item_int_view.view.*
-import kotlinx.android.synthetic.main.example_item_picture_view.view.*
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -45,7 +36,7 @@ class UpdatingListExampleActivity : AppCompatActivity() {
 
     fun initUpdatingList() {
         list.setLoadingViews(
-                R.layout.example_native_loading_view,
+                R.layout.default_native_loading_view,
                 R.layout.example_empty_view)
 
         list.setAdapter(mAdapter)

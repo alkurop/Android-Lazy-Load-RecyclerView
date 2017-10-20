@@ -11,7 +11,7 @@ import com.github.alkurop.updatinglist.BaseViewHolder
 class ExampleAdapter() : BaseLoadMoreAdapter<ILongProcessData>() {
     val SOME_OTHER_VIEW_TYPE = 1
     override fun onCreateProgressVH(viewGroup: ViewGroup): BaseViewHolder<ILongProcessData> {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.example_item_loading_view, viewGroup, false)
+        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.default_item_loading_view, viewGroup, false)
         return ProgressVH(view)
     }
 
